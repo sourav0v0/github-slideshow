@@ -1,0 +1,148 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct student {
+	 int id;
+    char name[50];
+    float percent;
+    long phone;
+};
+
+int count = 0;
+void add();
+void displayAll();
+void modify();
+char fname[]={"mydb.txt"};
+
+
+void main(int argc, char *argv[])
+{
+    int choice;
+    while (1)
+    {
+        printf("MENU:\n");
+        printf("1.Add a record\n");
+        printf("2.Display the file\n");
+        printf("3.Update the record\n");
+        printf("Enter your choice:");
+        scanf("%d", &choice);
+
+        switch(choice)
+        {
+        case 1:
+            add();
+            break;
+        case 2:
+            displayAll();
+            break;
+        case 3:
+        		modify();
+            break;
+        case 4:
+            exit(0);
+        default:
+            printf("Wrong choice!!!\nEnter the correct choice\n");
+        }
+    }
+}
+
+void add()
+{
+
+    FILE *fp;
+    student sd;
+    fp=fopen(fname,"ab");
+    printf("Enter the student id\n");
+    scanf("%d",&sd.id);
+    printf("Enter the student Name\n");
+    scanf("%s",&sd.name);
+    printf("Enter the student Percent\n");
+    scanf("%f",&sd.percent);
+    printf("Enter the student Pnone no\n");
+    scanf("%d",&sd.phone);
+    fwrite(&sd,sizeof(sd),1,fp);
+    fclose(fp);
+
+}
+void displayAll()
+{
+FILE *fp;
+struct student t;
+
+fp=fopen(fname,"rb");
+
+printf("\n========================================================\n\n");
+printf("\t\t All Student Details\n\n");
+printf("========================================================\n\n");
+
+printf("ID\tName\tPercent\tPhone\n\n");
+
+while(1)
+{
+fread(&t,sizeof(t),1,fp);
+
+if(feof(fp))
+{
+break;
+}
+printf("%d\t",t.id);
+printf("%s\t",t.name);
+printf("%f\t",t.percent);
+printf("%d\t\n\n",t.phone);
+
+}
+printf("========================================================\n\n");
+
+fclose(fp);
+}
+void modify()
+{
+FILE *fp,*fp1;
+student t,t1;
+int ID,found=0,count=0;
+
+fp=fopen(fname,"rb");
+fp1=fopen(fname,"wb");
+
+printf("\nEnter the Student ID you want to Modify:");
+scanf("%d",&ID);
+
+while(1)
+{
+fread(&t,sizeof(t),1,fp);
+
+if(feof(fp))
+{
+break;
+}
+if(t.id == ID)
+{
+found=1;
+printf("\nEnter Employee ID:");
+scanf("%d",&t.id);
+fflush(stdin);
+printf("\nEnter Student Name:");
+scanf("%s",t.name);
+printf("\nEnter Percentage:");
+scanf("%f",&t.percent);
+printf("\nEnter Phone Number:");
+scanf("%d",&t.phone);
+fwrite(&t,sizeof(t),1,fp1);
+}
+else
+{
+fwrite(&t,sizeof(t),1,fp1);
+}
+}
+fclose(fp);
+fclose(fp1);
+
+if(found==0)
+{
+printf("Sorry No Record Found\n\n");
+}
+}
+
+
+
+
